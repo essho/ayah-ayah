@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>آيه آيه</title>
+<style>
+    body {
+      margin: 0;
+      background-color: #111;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    .ayah-text {
+      font-size: 2rem;
+      text-align: center;
+      margin: 1rem;
+    }
+    .translation-text {
+      font-size: 0.8rem;
+      text-align: center;
+      color: #ccc;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      position: absolute;
+      bottom: 0.5rem;
+      padding: 0 1rem;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      position: absolute;
+      bottom: 2rem;
+      padding: 0 2rem;
+    }
+    .arrow-btn {
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      opacity: 0.5;
+    }
+    .center-btn {
+      background: #333;
+      border: none;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .top-icons {
+      position: absolute;
+      top: 1rem;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1rem;
+    }
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: white;
+      opacity: 0.5;
+      cursor: pointer;
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    .modal-content {
+      background-color: #222;
+      padding: 1rem;
+      border-radius: 10px;
+      max-height: 60vh;
+      overflow-y: auto;
+      min-width: 250px;
+    }
+    .scrollable-select {
+      max-height: 120px;
+      overflow-y: auto;
+      background: #333;
+      border-radius: 5px;
+      margin: 0.5rem 0;
+    }
+    .scrollable-select div {
+      padding: 0.5rem;
+      cursor: pointer;
+    }
+    .scrollable-select div:hover {
+      background: #444;
+    }
+    .setting-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .row-scrolls {
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+    }
+    .row-scrolls > div {
+      flex: 1;
+    }
+    #expandedTranslationModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+    }
+    #expandedTranslationModal .modal-content {
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="top-icons">
+<button class="icon-btn" id="settingsBtn">⚙️</button>
+<button class="icon-btn" id="audioBtn">🔊</button>
+</div>
+<div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 40vh;">...</div>
+<div class="translation-text" id="translation" style="max-height: 3.5rem; overflow-y: auto;">...</div>
+<div class="controls">
+<button class="arrow-btn" id="prevBtn">◀️</button>
+<button class="center-btn" id="openAyahPicker">...</button>
+<button class="arrow-btn" id="nextBtn">▶️</button>
+</div>
+<!-- Expanded Translation Modal -->
+<div class="modal" id="expandedTranslationModal">
+<div class="modal-content">
+<div id="expandedTranslation"></div>
+<div style="text-align:center; margin-top:1rem;">
+<button onclick="document.getElementById('expandedTranslationModal').style.display='none'">إغلاق</button>
+</div>
+</div>
+</div>
+<!-- Ayah Picker Modal -->
+<div class="modal" id="ayahPickerModal" onclick="this.style.display='none'">
+<div class="modal-content" onclick="event.stopPropagation()">
+<h3>اختيار السورة</h3>
+<div class="scrollable-select" id="quickSurahList"></div>
+<h3>اختيار الآية</h3>
+<div class="scrollable-select" id="quickAyahList"></div>
+</div>
+</div>
+<!-- Settings Modal -->
+<div class="modal" id="settingsModal" onclick="this.style.display='none'">
+<div class="modal-content" onclick="event.stopPropagation()">
+<h2>الإعدادات</h2>
+<div class="setting-row">
+<button id="fontInc">+</button>
+<span>حجم الخط</span>
+<button id="fontDec">−</button>
+</div>
+<h3>القارئ</h3>
+<div class="scrollable-select" id="readerList">
+<div>سعد الغامدي</div>
+</div>
+<h3>التفسير / الترجمة</h3>
+<div class="scrollable-select" id="translationSelect">
+<div data-lang="ar">تفسير (عربي)</div>
+<div data-lang="en">ترجمة (إنجليزي)</div>
+<div data-lang="id">ترجمة (إندونيسي)</div>
+</div>
+</div>
+</div>
+<script>
+    const ayahEl = document.getElementById('ayah');
+    const translationEl = document.getElementById('translation');
+    const quickSurahList = document.getElementById('quickSurahList');
+    const quickAyahList = document.getElementById('quickAyahList');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const audioBtn = document.getElementById('audioBtn');
+    const fontInc = document.getElementById('fontInc');
+    const fontDec = document.getElementById('fontDec');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const openAyahPicker = document.getElementById('openAyahPicker');
+    const settingsModal = document.getElementById('settingsModal');
+    const ayahPickerModal = document.getElementById('ayahPickerModal');
+    const translationSelect = document.getElementById('translationSelect');
+    const expandedTranslationModal = document.getElementById('expandedTranslationModal');
+    const expandedTranslation = document.getElementById('expandedTranslation');
+
+    let surahs = [];
+    let currentSurah = parseInt(localStorage.getItem('lastSurah') || '1');
+    let currentAyah = parseInt(localStorage.getItem('lastAyah') || '1');
+    let fontSize = parseInt(localStorage.getItem('fontSize') || '28');
+    let currentLang = localStorage.getItem('translationLang') || 'ar';
+
+    function saveState() {
+      localStorage.setItem('lastSurah', currentSurah);
+      localStorage.setItem('lastAyah', currentAyah);
+      localStorage.setItem('fontSize', fontSize);
+      localStorage.setItem('translationLang', currentLang);
+    }
+
+    function setFontSize() {
+      ayahEl.style.fontSize = fontSize + 'px';
+    }
+
+    async function loadSurahs() {
+      const res = await fetch('./surah.json');
+      surahs = await res.json();
+      renderQuickSurahList();
+      loadAyah();
+    }
+
+    function renderQuickSurahList() {
+      quickSurahList.innerHTML = '';
+      surahs.forEach((s, index) => {
+        const el = document.createElement('div');
+        el.textContent = s.titleAr;
+        el.onclick = () => {
+          currentSurah = index + 1;
+          currentAyah = 1;
+          renderQuickAyahList();
+          saveState();
+        };
+        quickSurahList.appendChild(el);
+      });
+      renderQuickAyahList();
+    }
+
+    function renderQuickAyahList() {
+      quickAyahList.innerHTML = '';
+      const count = surahs[currentSurah - 1].count;
+      for (let i = 1; i <= count; i++) {
+        const el = document.createElement('div');
+        el.textContent = `آية ${i}`;
+        el.onclick = () => {
+          currentAyah = i;
+          loadAyah();
+          ayahPickerModal.style.display = 'none';
+          saveState();
+        };
+        quickAyahList.appendChild(el);
+      }
+    }
+
+    async function loadAyah() {
+      setFontSize();
+
+      const surahFile = `./surah/surah_${currentSurah}.json`;
+      const surahRes = await fetch(surahFile);
+      const surahData = await surahRes.json();
+      const ayahText = surahData.verse[`verse_${currentAyah}`] || '...';
+      ayahEl.textContent = ayahText;
+
+      const transFile = `./translation/${currentLang}/${currentLang}_translation_${currentSurah}.json`;
+      const transRes = await fetch(transFile);
+      const transData = await transRes.json();
+      const transText = transData.verse[`verse_${currentAyah}`] || '...';
+      translationEl.textContent = transText;
+      expandedTranslation.textContent = transText;
+
+      const surahName = surahs[currentSurah - 1]?.titleAr || '';
+      openAyahPicker.textContent = `${surahName} - ${currentAyah}`;
+    }
+
+    translationEl.onclick = () => {
+      expandedTranslationModal.style.display = 'flex';
+    };
+
+    settingsBtn.onclick = () => settingsModal.style.display = 'flex';
+    openAyahPicker.onclick = () => ayahPickerModal.style.display = 'flex';
+    fontInc.onclick = () => { fontSize += 2; setFontSize(); saveState(); };
+    fontDec.onclick = () => { fontSize = Math.max(12, fontSize - 2); setFontSize(); saveState(); };
+    nextBtn.onclick = () => {
+      const max = surahs[currentSurah - 1].count;
+      if (currentAyah < max) currentAyah++;
+      else if (currentSurah < 114) { currentSurah++; currentAyah = 1; }
+      loadAyah(); saveState();
+    };
+    prevBtn.onclick = () => {
+      if (currentAyah > 1) currentAyah--;
+      else if (currentSurah > 1) {
+        currentSurah--;
+        currentAyah = surahs[currentSurah - 1].count;
+      }
+      loadAyah(); saveState();
+    };
+
+    translationSelect.querySelectorAll('div').forEach(div => {
+      div.onclick = () => {
+        currentLang = div.dataset.lang;
+        loadAyah();
+        saveState();
+      };
+    });
+
+    loadSurahs();
+  
+document.getElementById("audioBtn").addEventListener("click", () => {
+  const surahNum = String(currentSurah).padStart(3, '0');
+  const ayahNum = String(currentAyah).padStart(3, '0');
+  const audioPath = `audio/${surahNum}/${ayahNum}.mp3`;
+  const player = document.getElementById("audioPlayer");
+  player.src = audioPath;
+  player.play().catch((e) => {
+    console.error("Failed to play audio:", e);
+    alert("تعذر تشغيل الصوت. تأكد من وجود الملف: " + audioPath);
+  });
+});
+</script>
+<audio id="audioPlayer" preload="auto"></audio><script>
+document.getElementById("audioBtn").addEventListener("click", () => {
+  if (!window.currentSurah || !window.currentAyah) return;
+  const surahStr = window.currentSurah.toString().padStart(3, '0');
+  const ayahStr = window.currentAyah.toString().padStart(3, '0');
+  const audioPath = `audio/${surahStr}/${ayahStr}.mp3`;
+
+  const player = document.getElementById("audioPlayer");
+  player.src = audioPath;
+  player.play().catch(e => {
+    console.error("فشل تشغيل الصوت:", e);
+    alert("فشل تشغيل الصوت. تأكد من وجود الملف.");
+  });
+});
+</script></body>
+</html>
