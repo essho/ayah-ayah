@@ -4,6 +4,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>آيه آيه</title>
 <style>
     body {
@@ -14,11 +15,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      //justify-content: center;
+      justify-content: flex-start; /* لو كنت عايز المحتوى يبدأ من فوق */
       height: 100vh;
-      overflow: hidden;
+      overflow: hidden; /* ⇦ لو عايز تمنع السكول كاملًا */
+      max-width: 100vw; /* ⇦ تمنع التمدد الأفقي */
+      max-height: 100vh; /* ⇦ تمنع التمدد الرأسي */
       position: relative;
+      box-sizing: border-box;
     }
+    * {
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
     .ayah-text {
       font-size: 2rem;
       text-align: center;
