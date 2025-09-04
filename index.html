@@ -37,10 +37,12 @@
       text-align: center;
       color: #ccc;
       //margin-bottom: 1rem;
-      position: absolute;
-      bottom: 3rem; /* ← خليه فوق الأزرار مباشرة */
+      position: fixed;
+      bottom: 3.5rem; /* ← خليه فوق الأزرار مباشرة */
       cursor: pointer;
       max-width: 95%;
+	  width: 100%;
+	  z-index: 8;            /* ← يظهر فوق الخلفية وتحت الأزرار */
     }
     .controls {
       position: fixed;
@@ -159,7 +161,7 @@
 <button class="icon-btn" id="audioBtn">🔊</button>
 </div>
 <div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 80vh;">...</div>
-<div class="translation-text" id="translation" style="max-height: 3.5rem; overflow-y: auto;">...</div>
+<div class="translation-text" id="translation" style="max-height: 3rem; overflow-y: auto;">...</div>
 <div class="controls">
 <button class="arrow-btn" id="prevBtn">▶️</button>
 <button class="center-btn" id="openAyahPicker">...</button>
