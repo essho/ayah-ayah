@@ -5,13 +5,14 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=Lateef&family=Noto+Kufi+Arabic&display=swap" rel="stylesheet">
 <title>آيه آيه</title>
 <style>
     body {
       margin: 0;
       background-color: #111;
       color: white;
-      font-family: sans-serif;
+      font-family: 'Traditional Arabic';
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -194,6 +195,26 @@
 <span>حجم الخط</span>
 <button id="fontDec">−</button>
 </div>
+<div class="setting-row">
+  <label for="textColor">لون الخط:</label>
+  <input type="color" id="textColor" value="#ffffff">
+  
+  <label for="fontFamily">نوع الخط:</label>
+  <select id="fontFamily">
+    <option value="'Cairo', Traditional">الافتراضي</option>
+    <option value="'Amiri', serif">1</option>
+    <option value="'Lateef', cursive">2</option>
+    <option value="'Noto Kufi Arabic', sans-serif">3</option>
+	<option value="'Noto Naskh Arabic', serif">4</option>
+	<option value="'Cairo', sans-serif">5</option>
+  </select>
+</div>
+
+<div class="setting-row">
+  <label for="bgColor">لون الخلفية:</label>
+  <input type="color" id="bgColor" value="#111111">
+</div>
+
 <h3>القارئ</h3>
 <div class="scrollable-select" id="readerList">
 <div>سعد الغامدي</div>
@@ -359,5 +380,22 @@ document.getElementById("audioBtn").addEventListener("click", () => {
     alert("فشل تشغيل الصوت. تأكد من وجود الملف.");
   });
 });
+
+  const textColorInput = document.getElementById('textColor');
+  const fontFamilySelect = document.getElementById('fontFamily');
+  const bgColorInput = document.getElementById('bgColor');
+
+  textColorInput.addEventListener('input', () => {
+    document.querySelector('.ayah-text').style.color = textColorInput.value;
+    document.querySelector('.translation-text').style.color = textColorInput.value;
+  });
+
+  fontFamilySelect.addEventListener('change', () => {
+    document.body.style.fontFamily = fontFamilySelect.value;
+  });
+
+  bgColorInput.addEventListener('input', () => {
+    document.body.style.backgroundColor = bgColorInput.value;
+  });
 </script></body>
 </html>
