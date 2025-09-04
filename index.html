@@ -14,7 +14,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      //justify-content: center;
       height: 100vh;
       overflow: hidden;
       position: relative;
@@ -39,7 +39,7 @@
       justify-content: space-between;
       width: 100%;
       position: absolute;
-      bottom: 2rem;
+      bottom: 4rem;
       padding: 0 2rem;
     }
     .arrow-btn {
@@ -58,6 +58,7 @@
       border-radius: 10px;
       font-size: 1rem;
       cursor: pointer;
+	  opacity: 0.6; /* ⇦ الشفافية */
     }
     .top-icons {
       position: absolute;
@@ -146,12 +147,12 @@
 <button class="icon-btn" id="settingsBtn">⚙️</button>
 <button class="icon-btn" id="audioBtn">🔊</button>
 </div>
-<div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 40vh;">...</div>
+<div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 80vh;">...</div>
 <div class="translation-text" id="translation" style="max-height: 3.5rem; overflow-y: auto;">...</div>
 <div class="controls">
-<button class="arrow-btn" id="prevBtn">◀️</button>
+<button class="arrow-btn" id="prevBtn">▶️</button>
 <button class="center-btn" id="openAyahPicker">...</button>
-<button class="arrow-btn" id="nextBtn">▶️</button>
+<button class="arrow-btn" id="nextBtn">◀️</button>
 </div>
 <!-- Expanded Translation Modal -->
 <div class="modal" id="expandedTranslationModal">
