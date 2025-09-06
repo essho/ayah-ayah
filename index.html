@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=Lateef&family=Noto+Kufi+Arabic&display=swap" rel="stylesheet">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Amiri&amp;family=Cairo&amp;family=Lateef&amp;family=Noto+Kufi+Arabic&amp;display=swap" rel="stylesheet"/>
 <title>آيه آيه</title>
 <style>
     body {
@@ -16,11 +16,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start; /* لو كنت عايز المحتوى يبدأ من فوق */
+      justify-content: flex-start;
       height: 100vh;
-      overflow: hidden; /* ⇦ لو عايز تمنع السكول كاملًا */
-      max-width: 100vw; /* ⇦ تمنع التمدد الأفقي */
-      max-height: 100vh; /* ⇦ تمنع التمدد الرأسي */
+      overflow: hidden;
+      max-width: 100vw;
+      max-height: 100vh;
       position: relative;
       box-sizing: border-box;
     }
@@ -37,13 +37,12 @@
       font-size: 1rem;
       text-align: center;
       color: #ccc;
-      //margin-bottom: 1rem;
       position: fixed;
-      bottom: 3.5rem; /* ← خليه فوق الأزرار مباشرة */
+      bottom: 3.5rem;
       cursor: pointer;
       max-width: 95%;
 	  width: 100%;
-	  z-index: 8;            /* ← يظهر فوق الخلفية وتحت الأزرار */
+	  z-index: 8;
     }
     .controls {
       position: fixed;
@@ -72,7 +71,7 @@
       border-radius: 10px;
       font-size: 1rem;
       cursor: pointer;
-	  opacity: 0.6; /* ⇦ الشفافية */
+	  opacity: 0.6;
     }
     .top-icons {
       position: absolute;
@@ -154,21 +153,40 @@
       max-height: 80vh;
       overflow-y: auto;
     }
-  </style>
+  
+.hamzat_wasl         { color: #A0A0A0; font-weight: bold; }
+.lam_shamsiyyah      { color: #FFA500; font-weight: bold; }
+.madd_2              { color: #00B050; font-weight: bold; }
+.madd_6              { color: #7030A0; font-weight: bold; }
+.madd_246            { color: #8E44AD; font-weight: bold; }
+.madd_munfasil       { color: #00B0F0; font-weight: bold; }
+.madd_muttasil       { color: #0070C0; font-weight: bold; }
+.idghaam_no_ghunnah  { color: #5B9BD5; font-weight: bold; }
+.idghaam_ghunnah     { color: #007000; font-weight: bold; }
+.qalqalah            { color: #FF0000; font-weight: bold; }
+.ghunnah             { color: #548235; font-weight: bold; }
+.ikhfa               { color: #FF66CC; font-weight: bold; }
+.silent              { color: #D9D9D9; font-weight: bold; }
+.ikhfa_shafawi       { color: #F4CCCC; font-weight: bold; }
+.idghaam_shafawi     { color: #6FA8DC; font-weight: bold; }
+.iqlab               { color: #FFD700; font-weight: bold; }
+.idghaam_mutajanisayn { color: #00FFFF; font-weight: bold; }
+
+</style>
 </head>
 <body>
+<audio id="audioPlayer" preload="auto"></audio>
 <div class="top-icons">
 <button class="icon-btn" id="settingsBtn">⚙️</button>
 <button class="icon-btn" id="audioBtn">🔊</button>
 </div>
-<div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 80vh;">...</div>
+<div class="ayah-text" id="bismillahText"></div><div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 80vh;">...</div>
 <div class="translation-text" id="translation" style="max-height: 3rem; overflow-y: auto;">...</div>
 <div class="controls">
 <button class="arrow-btn" id="prevBtn">▶️</button>
 <button class="center-btn" id="openAyahPicker">...</button>
 <button class="arrow-btn" id="nextBtn">◀️</button>
 </div>
-<!-- Expanded Translation Modal -->
 <div class="modal" id="expandedTranslationModal">
 <div class="modal-content">
 <div id="expandedTranslation"></div>
@@ -177,7 +195,6 @@
 </div>
 </div>
 </div>
-<!-- Ayah Picker Modal -->
 <div class="modal" id="ayahPickerModal" onclick="this.style.display='none'">
 <div class="modal-content" onclick="event.stopPropagation()">
 <h3>اختيار السورة</h3>
@@ -186,7 +203,6 @@
 <div class="scrollable-select" id="quickAyahList"></div>
 </div>
 </div>
-<!-- Settings Modal -->
 <div class="modal" id="settingsModal" onclick="this.style.display='none'">
 <div class="modal-content" onclick="event.stopPropagation()">
 <h2>الإعدادات</h2>
@@ -196,25 +212,26 @@
 <button id="fontDec">−</button>
 </div>
 <div class="setting-row">
-  <label for="textColor">لون الخط:</label>
-  <input type="color" id="textColor" value="#ffffff">
-  
-  <label for="fontFamily">نوع الخط:</label>
-  <select id="fontFamily">
-    <option value="'Cairo', Traditional">الافتراضي</option>
-    <option value="'Amiri', serif">1</option>
-    <option value="'Lateef', cursive">2</option>
-    <option value="'Noto Kufi Arabic', sans-serif">3</option>
-	<option value="'Noto Naskh Arabic', serif">4</option>
-	<option value="'Cairo', sans-serif">5</option>
-  </select>
+<label for="textColor">لون الخط:</label>
+<input id="textColor" type="color" value="#ffffff"/>
+<label for="fontFamily">نوع الخط:</label>
+<select id="fontFamily">
+<option value="'Cairo', Traditional">الافتراضي</option>
+<option value="'Amiri', serif">1</option>
+<option value="'Lateef', cursive">2</option>
+<option value="'Noto Kufi Arabic', sans-serif">3</option>
+<option value="'Noto Naskh Arabic', serif">4</option>
+<option value="'Cairo', sans-serif">5</option>
+</select>
 </div>
-
 <div class="setting-row">
-  <label for="bgColor">لون الخلفية:</label>
-  <input type="color" id="bgColor" value="#111111">
+<label for="bgColor">لون الخلفية:</label>
+<input id="bgColor" type="color" value="#111111"/>
+<div class="setting-row">
+<label for="toggleTajweed">تفعيل التجويد:</label>
+<input id="toggleTajweed" type="checkbox"/>
 </div>
-
+</div>
 <h3>القارئ</h3>
 <div class="scrollable-select" id="readerList">
 <div>سعد الغامدي</div>
@@ -228,7 +245,10 @@
 </div>
 </div>
 <script>
+    const bgColorInput = document.getElementById('bgColor');
+    const textColorInput = document.getElementById('textColor');
     const ayahEl = document.getElementById('ayah');
+    const bismillahEl = document.getElementById('bismillahText');
     const translationEl = document.getElementById('translation');
     const quickSurahList = document.getElementById('quickSurahList');
     const quickAyahList = document.getElementById('quickAyahList');
@@ -244,13 +264,17 @@
     const translationSelect = document.getElementById('translationSelect');
     const expandedTranslationModal = document.getElementById('expandedTranslationModal');
     const expandedTranslation = document.getElementById('expandedTranslation');
+    const audioPlayer = document.getElementById("audioPlayer");
+    const toggleTajweed = document.getElementById('toggleTajweed');
+    const fontFamilySelect = document.getElementById('fontFamily');
 
     let surahs = [];
     let currentSurah = parseInt(localStorage.getItem('lastSurah') || '1');
     let currentAyah = parseInt(localStorage.getItem('lastAyah') || '1');
     let fontSize = parseInt(localStorage.getItem('fontSize') || '28');
     let currentLang = localStorage.getItem('translationLang') || 'ar';
-
+    let isTajweedEnabled = JSON.parse(localStorage.getItem('tajweedEnabled') || 'true');
+    
     function saveState() {
       localStorage.setItem('lastSurah', currentSurah);
       localStorage.setItem('lastAyah', currentAyah);
@@ -263,10 +287,15 @@
     }
 
     async function loadSurahs() {
-      const res = await fetch('./surah.json');
-      surahs = await res.json();
-      renderQuickSurahList();
-      loadAyah();
+      try {
+        const res = await fetch('./surah.json');
+        surahs = await res.json();
+        renderQuickSurahList();
+        loadAyah();
+      } catch (err) {
+        alert("فشل تحميل قائمة السور. تأكد من وجود ملف 'surah.json' في نفس المجلد.");
+        console.error("فشل تحميل قائمة السور:", err);
+      }
     }
 
     function renderQuickSurahList() {
@@ -277,6 +306,7 @@
         el.onclick = () => {
           currentSurah = index + 1;
           currentAyah = 1;
+          loadAyah();
           renderQuickAyahList();
           saveState();
         };
@@ -303,24 +333,87 @@
 
     async function loadAyah() {
       setFontSize();
+      updateColorState();
 
-      const surahFile = `./surah/surah_${currentSurah}.json`;
-      const surahRes = await fetch(surahFile);
-      const surahData = await surahRes.json();
-      const ayahText = surahData.verse[`verse_${currentAyah}`] || '...';
-      ayahEl.textContent = ayahText;
+      try {
+        const surahRes = await fetch(`./surah/surah_${currentSurah}.json`);
+        if (!surahRes.ok) throw new Error("Surah file not found.");
+        const surahData = await surahRes.json();
+        
+        const transRes = await fetch(`./translation/${currentLang}/${currentLang}_translation_${currentSurah}.json`);
+        if (!transRes.ok) throw new Error("Translation file not found.");
+        const transData = await transRes.json();
+        
+        let ayahTextRaw = surahData.verse[`verse_${currentAyah}`] || '...';
+        
+        // Handle Bismillah for Ayah 1
+        bismillahEl.innerHTML = '';
+        if (currentAyah === 1 && surahData.verse["verse_0"]) {
+            bismillahEl.innerHTML = surahData.verse["verse_0"];
+        }
 
-      const transFile = `./translation/${currentLang}/${currentLang}_translation_${currentSurah}.json`;
-      const transRes = await fetch(transFile);
-      const transData = await transRes.json();
-      const transText = transData.verse[`verse_${currentAyah}`] || '...';
-      translationEl.textContent = transText;
-      expandedTranslation.textContent = transText;
+        const transText = transData.verse[`verse_${currentAyah}`] || '...';
+        let finalText = ayahTextRaw;
 
-      const surahName = surahs[currentSurah - 1]?.titleAr || '';
-      openAyahPicker.textContent = `${surahName} - ${currentAyah}`;
+        // Apply Tajweed Rules based on the new logic
+        if (isTajweedEnabled) {
+          try {
+            const tajweedRes = await fetch(`./tajweed/surah_${currentSurah}.json`);
+            if (tajweedRes.ok) {
+                const tajweedData = await tajweedRes.json();
+                
+                let rules = tajweedData.verse[`verse_${currentAyah}`] || [];
+                let result = '', pos = 0;
+                
+                // Color the Ayah directly using its own rules
+                for (const r of rules) {
+                  result += ayahTextRaw.slice(pos, r.start);
+                  result += `<span class="${r.rule}">` + ayahTextRaw.slice(r.start, r.end) + "</span>";
+                  pos = r.end;
+                }
+                result += ayahTextRaw.slice(pos);
+                finalText = result;
+
+            } else {
+                console.warn("فشل تحميل ملف التجويد.");
+            }
+          } catch (err) {
+            console.warn("فشل تحميل ملف التجويد", err);
+          }
+        }
+        
+        ayahEl.innerHTML = finalText;
+        translationEl.textContent = transText;
+        expandedTranslation.textContent = transText;
+
+        const surahName = surahs[currentSurah - 1]?.titleAr || '';
+        openAyahPicker.textContent = `${surahName} - ${currentAyah}`;
+
+      } catch (err) {
+        alert("حدث خطأ في تحميل البيانات. قد يكون ملف السورة أو الترجمة مفقودًا أو المسار خاطئًا.");
+        console.error("فشل تحميل البيانات:", err);
+        ayahEl.textContent = 'حدث خطأ في تحميل البيانات. الرجاء مراجعة وحدة التحكم.';
+        translationEl.textContent = '...';
+      }
     }
 
+    function updateColorState() {
+      const allTextElements = document.querySelectorAll('.ayah-text, .translation-text');
+      const bgColor = bgColorInput.value.toLowerCase();
+
+      if (isTajweedEnabled) {
+        textColorInput.disabled = true;
+        const textColor = (bgColor === '#ffffff' || bgColor === 'white') ? '#000000' : '#ffffff';
+        allTextElements.forEach(el => el.style.color = textColor);
+      } else {
+        textColorInput.disabled = false;
+        allTextElements.forEach(el => el.style.color = textColorInput.value);
+      }
+
+      document.body.style.backgroundColor = bgColorInput.value;
+    }
+
+    // Event Listeners
     translationEl.onclick = () => {
       expandedTranslationModal.style.display = 'flex';
     };
@@ -329,12 +422,14 @@
     openAyahPicker.onclick = () => ayahPickerModal.style.display = 'flex';
     fontInc.onclick = () => { fontSize += 2; setFontSize(); saveState(); };
     fontDec.onclick = () => { fontSize = Math.max(12, fontSize - 2); setFontSize(); saveState(); };
+
     nextBtn.onclick = () => {
       const max = surahs[currentSurah - 1].count;
       if (currentAyah < max) currentAyah++;
       else if (currentSurah < 114) { currentSurah++; currentAyah = 1; }
       loadAyah(); saveState();
     };
+
     prevBtn.onclick = () => {
       if (currentAyah > 1) currentAyah--;
       else if (currentSurah > 1) {
@@ -352,50 +447,37 @@
       };
     });
 
+    audioBtn.addEventListener("click", () => {
+      if (!currentSurah || !currentAyah) return;
+      const surahStr = currentSurah.toString().padStart(3, '0');
+      const ayahStr = currentAyah.toString().padStart(3, '0');
+      const audioPath = `audio/${surahStr}/${ayahStr}.mp3`;
+      
+      audioPlayer.src = audioPath;
+      audioPlayer.play().catch(e => {
+        console.error("فشل تشغيل الصوت:", e);
+        alert("فشل تشغيل الصوت. تأكد من وجود الملف.");
+      });
+    });
+
+    toggleTajweed.addEventListener('change', () => {
+      isTajweedEnabled = toggleTajweed.checked;
+      localStorage.setItem('tajweedEnabled', isTajweedEnabled);
+      loadAyah();
+    });
+
+    textColorInput.addEventListener('input', () => {
+      updateColorState();
+    });
+
+    fontFamilySelect.addEventListener('change', () => {
+      document.body.style.fontFamily = fontFamilySelect.value;
+    });
+
+    bgColorInput.addEventListener('input', updateColorState);
+
+    // Initial load
+    toggleTajweed.checked = isTajweedEnabled;
     loadSurahs();
-  
-document.getElementById("audioBtn").addEventListener("click", () => {
-  const surahNum = String(currentSurah).padStart(3, '0');
-  const ayahNum = String(currentAyah).padStart(3, '0');
-  const audioPath = `audio/${surahNum}/${ayahNum}.mp3`;
-  const player = document.getElementById("audioPlayer");
-  player.src = audioPath;
-  player.play().catch((e) => {
-    console.error("Failed to play audio:", e);
-    alert("تعذر تشغيل الصوت. تأكد من وجود الملف: " + audioPath);
-  });
-});
-</script>
-<audio id="audioPlayer" preload="auto"></audio><script>
-document.getElementById("audioBtn").addEventListener("click", () => {
-  if (!window.currentSurah || !window.currentAyah) return;
-  const surahStr = window.currentSurah.toString().padStart(3, '0');
-  const ayahStr = window.currentAyah.toString().padStart(3, '0');
-  const audioPath = `audio/${surahStr}/${ayahStr}.mp3`;
-
-  const player = document.getElementById("audioPlayer");
-  player.src = audioPath;
-  player.play().catch(e => {
-    console.error("فشل تشغيل الصوت:", e);
-    alert("فشل تشغيل الصوت. تأكد من وجود الملف.");
-  });
-});
-
-  const textColorInput = document.getElementById('textColor');
-  const fontFamilySelect = document.getElementById('fontFamily');
-  const bgColorInput = document.getElementById('bgColor');
-
-  textColorInput.addEventListener('input', () => {
-    document.querySelector('.ayah-text').style.color = textColorInput.value;
-    document.querySelector('.translation-text').style.color = textColorInput.value;
-  });
-
-  fontFamilySelect.addEventListener('change', () => {
-    document.body.style.fontFamily = fontFamilySelect.value;
-  });
-
-  bgColorInput.addEventListener('input', () => {
-    document.body.style.backgroundColor = bgColorInput.value;
-  });
 </script></body>
 </html>

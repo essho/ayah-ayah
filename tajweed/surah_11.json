@@ -40,39 +40,39 @@
         ],
         "verse_1": [
             {
-                "end": 42,
+                "end": 3,
                 "rule": "madd_6",
+                "start": 1
+            },
+            {
+                "end": 13,
+                "rule": "madd_2",
+                "start": 10
+            },
+            {
+                "end": 36,
+                "rule": "madd_2",
+                "start": 33
+            },
+            {
+                "end": 41,
+                "rule": "madd_2",
                 "start": 40
             },
             {
-                "end": 49,
-                "rule": "madd_2",
-                "start": 48
-            },
-            {
-                "end": 69,
-                "rule": "madd_2",
-                "start": 68
-            },
-            {
-                "end": 74,
-                "rule": "madd_2",
-                "start": 73
-            },
-            {
-                "end": 80,
+                "end": 47,
                 "rule": "ghunnah",
-                "start": 77
+                "start": 44
             },
             {
-                "end": 98,
+                "end": 65,
                 "rule": "idghaam_no_ghunnah",
-                "start": 93
+                "start": 60
             },
             {
-                "end": 116,
+                "end": 83,
                 "rule": "madd_246",
-                "start": 115
+                "start": 82
             }
         ],
         "verse_2": [

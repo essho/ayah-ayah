@@ -40,19 +40,19 @@
         ],
         "verse_1": [
             {
-                "end": 42,
+                "end": 2,
                 "rule": "madd_6",
-                "start": 40
+                "start": 1
             },
             {
-                "end": 44,
+                "end": 4,
                 "rule": "madd_6",
-                "start": 42
+                "start": 2
             },
             {
-                "end": 46,
+                "end": 7,
                 "rule": "madd_6",
-                "start": 44
+                "start": 4
             }
         ],
         "verse_2": [
