@@ -493,7 +493,7 @@ async function loadAyah() {
         bismillahEl.innerHTML = ''; // هذا السطر يمسح البسملة القديمة
         
         // قم بعرض البسملة في بداية كل سورة باستثناء سورة التوبة (السورة رقم 9)
-        if (currentAyah === 1 && currentSurah !== 9) {
+        if (currentAyah === 1 && currentSurah !== 1&9) {
             bismillahEl.innerHTML = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
         }
         // End of the new Bismillah logic
