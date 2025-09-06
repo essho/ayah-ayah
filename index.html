@@ -38,6 +38,8 @@
       font-size: 2rem;
       text-align: center;
       margin: 1rem;
+	  letter-spacing: 0.5px;
+	  line-height: 3;
     }
     .translation-text {
       font-size: 1rem;
@@ -95,7 +97,7 @@
       top: 1rem;
       width: 100%;
       display: flex;
-      justify-content: space-between;  //space-around;
+      justify-content: space-between;
       padding: 0 1rem;
     }
     .icon-btn {
@@ -299,14 +301,11 @@
             <div style="display:flex; align-items:center; gap: 0.5rem;">
                 <label for="fontFamily">نوع الخط:</label>
                 <select id="fontFamily">
-                    <option value="'Amiri', serif" selected>1 (افتراضي)</option>
-                    <option value="'Lateef', cursive">2</option>
-                    <option value="'Noto Kufi Arabic', sans-serif">3</option>
-                    <option value="'Noto Naskh Arabic', serif">4</option>
-                    <option value="'Cairo', sans-serif">5</option>
-                    <option value="'Reem Kufi', sans-serif">6</option>
-                    <option value="'Scheherazade New', serif">7</option>
-                    <option value="'Tajawal', sans-serif">8</option>
+                    <option value="'Scheherazade New', serif" selected>1 (افتراضي)</option>
+                        <option value="'Noto Naskh Arabic', serif">2</option>
+                        <option value="'Amiri', serif">3</option>
+                        <option value="'Lateef', cursive">4</option>
+                        <option value="'Reem Kufi', sans-serif">5</option>
                 </select>
             </div>
         </div>
@@ -474,7 +473,7 @@
       setActiveItem('quickAyahList', currentAyah - 1);
     }
 
-    async function loadAyah() {
+async function loadAyah() {
       setFontSize();
       updateColorState();
 
@@ -490,16 +489,15 @@
         if (!transRes.ok) throw new Error("Translation file not found.");
         const transData = await transRes.json();
         
-        // Handling the Bismillah based on the new structure
-        bismillahEl.innerHTML = '';
-        if (currentSurah === 1 && currentAyah === 1) {
-            // The Bismillah for Surah 1 is part of ayah 1, but ayah #2 is the first one in the provided data.
-            // A hardcoded check for Bismillah in `verse_1` is needed if not a separate ayah.
-            // For now, we will handle the Bismillah from a separate ayah 1, if it exists.
-        } else if (currentAyah === 1 && surahData.ayahs[0].text.includes("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")) {
-            bismillahEl.innerHTML = surahData.ayahs[0].qpc_tajweed_text;
+        // Start of the new Bismillah logic
+        bismillahEl.innerHTML = ''; // هذا السطر يمسح البسملة القديمة
+        
+        // قم بعرض البسملة في بداية كل سورة باستثناء سورة التوبة (السورة رقم 9)
+        if (currentAyah === 1 && currentSurah !== 9) {
+            bismillahEl.innerHTML = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
         }
-
+        // End of the new Bismillah logic
+        
         let finalText = isTajweedEnabled ? ayahData.qpc_tajweed_text : ayahData.text;
         
         // Remove ayah number from text as it's not a rule
