@@ -39,7 +39,7 @@
       text-align: center;
       margin: 1rem;
 	  letter-spacing: 0.5px;
-	  line-height: 3;
+	  line-height: 2.5;
     }
     .translation-text {
       font-size: 1rem;
@@ -99,6 +99,12 @@
       display: flex;
       justify-content: space-between;
       padding: 0 1rem;
+	  align-items: center;
+    }
+	   #repeatCount {
+      font-size: 0.8rem;
+      direction: ltr;
+      display: none;
     }
     .icon-btn {
       background: none;
@@ -108,6 +114,10 @@
       opacity: 0.5;
       cursor: pointer;
       transition: opacity 0.3s ease, transform 0.3s ease;
+	   display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      position: relative;
     }
     .icon-btn:hover {
         opacity: 1;
@@ -127,11 +137,11 @@
     }
     .modal-content {
       background-color: var(--modal-bg-color);
-      padding: 1rem;
+      padding: 0.1rem;
       border-radius: 10px;
       max-height: 80vh;
       min-width: 40vw;
-      max-width: 400px;
+      max-width: 300px;
       overflow-y: auto;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
@@ -244,6 +254,11 @@
 <button class="icon-btn" id="settingsBtn">⚙️</button>
 <button class="icon-btn" id="searchBtn">🔍</button>
 <button class="icon-btn" id="audioBtn">🔊</button>
+<button class="icon-btn" id="repeatBtn">
+  <span id="repeatIcon">🔁</span>
+  <span id="repeatCount"></span>
+  <span id="repeatCount" style="font-size: 0.8rem; position: absolute; bottom: 0.2rem; right: 0.2rem; display: none; transform: scaleX(-1); direction: ltr;"></span>
+</button>
 </div>
 <div class="ayah-text" id="bismillahText"></div>
 <div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 80vh;">...</div>
@@ -321,7 +336,15 @@
         </div>
         
         <div class="setting-row" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
-            <h3>القارئ</h3>
+        <h3>القراءة الصوتية</h3>
+        <div class="setting-row" style="display: flex; justify-content: center; gap: 1rem; align-items: center;">
+            <label for="continuousPlay">مستمر</label>
+            <input type="checkbox" id="continuousPlay" />
+        </div>
+        <div class="setting-row" style="display: flex; justify-content: center; gap: 1rem; align-items: center;">
+            <label for="repeatNumber">تكرار الآية</label>
+            <input type="number" id="repeatNumber" value="1" min="1" max="100" style="width: 50px; padding: 0.2rem; background: #333; color: white; border: none; border-radius: 5px; text-align: center;"/>
+        </div>
             <div class="scrollable-select" id="readerList">
                 <div>سعد الغامدي</div>
             </div>
@@ -335,6 +358,7 @@
                 <option value="id">ترجمة (إندونيسي)</option>
             </select>
         </div>
+        
     </div>
 </div>
 
@@ -367,7 +391,19 @@
     const searchModal = document.getElementById('searchModal');
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
-
+    
+    // New audio control variables
+    const repeatBtn = document.getElementById('repeatBtn');
+    const repeatIcon = document.getElementById('repeatIcon');
+    const repeatCountSpan = document.getElementById('repeatCount');
+    const repeatNumberInput = document.getElementById('repeatNumber');
+    const continuousPlayCheckbox = document.getElementById('continuousPlay');
+    
+    let isPlaying = false;
+    let currentRepeatCount = 0;
+    let currentAudioState = "none"; // States: "repeat", "continuous", "none"
+    let currentAudioAyah = null; // To track the ayah being played
+    
     let surahs = [];
     let fullQuranData = null; // Variable to hold all surahs data
     let currentSurah = parseInt(localStorage.getItem('lastSurah') || '1');
@@ -375,12 +411,16 @@
     let fontSize = parseInt(localStorage.getItem('fontSize') || '28');
     let currentLang = localStorage.getItem('translationLang') || 'ar';
     let isTajweedEnabled = JSON.parse(localStorage.getItem('tajweedEnabled') || 'true');
+    let repeatNumber = parseInt(localStorage.getItem('repeatNumber') || '1');
+    let isContinuousPlay = JSON.parse(localStorage.getItem('isContinuousPlay') || 'false');
     
     function saveState() {
       localStorage.setItem('lastSurah', currentSurah);
       localStorage.setItem('lastAyah', currentAyah);
       localStorage.setItem('fontSize', fontSize);
       localStorage.setItem('translationLang', currentLang);
+      localStorage.setItem('repeatNumber', repeatNumber);
+      localStorage.setItem('isContinuousPlay', isContinuousPlay);
     }
 
     function setFontSize() {
@@ -444,7 +484,7 @@
         el.onclick = () => {
           currentSurah = index + 1;
           currentAyah = 1;
-          loadAyah();
+          handleManualAyahChange();
           renderQuickAyahList();
           ayahPickerModal.style.display = 'none';
           saveState();
@@ -464,13 +504,22 @@
         el.textContent = `آية ${i}`;
         el.onclick = () => {
           currentAyah = i;
-          loadAyah();
+          handleManualAyahChange();
           ayahPickerModal.style.display = 'none';
           saveState();
         };
         quickAyahList.appendChild(el);
       }
       setActiveItem('quickAyahList', currentAyah - 1);
+    }
+    
+    function handleManualAyahChange() {
+        audioPlayer.pause();
+        audioBtn.textContent = '🔊';
+        isPlaying = false;
+        currentRepeatCount = 0;
+        currentAudioState = "none";
+        loadAyah();
     }
 
 async function loadAyah() {
@@ -493,7 +542,7 @@ async function loadAyah() {
         bismillahEl.innerHTML = ''; // هذا السطر يمسح البسملة القديمة
         
         // قم بعرض البسملة في بداية كل سورة باستثناء سورة التوبة (السورة رقم 9)
-        if (currentAyah === 1 && currentSurah !== 1&9) {
+        if (currentAyah === 1 && currentSurah !== 1 & currentSurah !== 9) {
             bismillahEl.innerHTML = 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
         }
         // End of the new Bismillah logic
@@ -511,6 +560,9 @@ async function loadAyah() {
 
         const surahName = surahs.find(s => s.number === currentSurah)?.titleAr || '';
         openAyahPicker.textContent = `${surahName} - ${currentAyah}`;
+        
+        // Update audio state
+        currentAudioAyah = { surah: currentSurah, ayah: currentAyah };
 
       } catch (err) {
         alert("حدث خطأ في تحميل البيانات. قد يكون الملف مفقودًا أو المسار خاطئًا.");
@@ -519,6 +571,67 @@ async function loadAyah() {
         translationEl.textContent = '...';
       }
     }
+    
+    function nextAyahOrSurah() {
+        const max = surahs[currentSurah - 1].count;
+        if (currentAyah < max) {
+            currentAyah++;
+        } else if (currentSurah < 114) {
+            currentSurah++;
+            currentAyah = 1;
+        }
+        saveState();
+        loadAyah();
+    }
+    
+    function playCurrentAyah() {
+      const surahStr = currentSurah.toString().padStart(3, '0');
+      const ayahStr = currentAyah.toString().padStart(3, '0');
+      const audioPath = `audio/${surahStr}/${ayahStr}.mp3`;
+      audioPlayer.src = audioPath;
+      audioPlayer.play().then(() => {
+        isPlaying = true;
+        audioBtn.textContent = '⏸️';
+        currentAudioAyah = { surah: currentSurah, ayah: currentAyah };
+      }).catch(e => {
+        console.error("فشل تشغيل الصوت:", e);
+        alert("فشل تشغيل الصوت. تأكد من وجود الملف.");
+        isPlaying = false;
+        audioBtn.textContent = '🔊';
+        currentRepeatCount = 0;
+        currentAudioState = "none";
+      });
+    }
+    
+    function updateRepeatIcon() {
+        if (isContinuousPlay) {
+            repeatIcon.textContent = '♾️';
+            repeatCountSpan.style.display = 'none';
+        } else if (repeatNumber > 1) {
+            repeatIcon.textContent = '🔁';
+            repeatCountSpan.textContent = repeatNumber;
+            repeatCountSpan.style.display = 'inline';
+        } else {
+            repeatIcon.textContent = '🔁';
+            repeatCountSpan.style.display = 'none';
+        }
+    }
+    
+    audioPlayer.onended = () => {
+        if (currentAudioState === "continuous") {
+            nextAyahOrSurah();
+            playCurrentAyah();
+        } else if (currentAudioState === "repeat" && currentRepeatCount < repeatNumber) {
+            currentRepeatCount++;
+            playCurrentAyah();
+        } else {
+            isPlaying = false;
+            audioBtn.textContent = '🔊';
+            currentRepeatCount = 0;
+            currentAudioState = "none";
+        }
+    };
+    
 
     function updateColorState() {
       const allTextElements = document.querySelectorAll('.ayah-text, .translation-text');
@@ -610,7 +723,7 @@ async function loadAyah() {
             el.onclick = () => {
                 currentSurah = result.surahIndex;
                 currentAyah = result.ayahNumber;
-                loadAyah();
+                handleManualAyahChange();
                 searchModal.style.display = 'none';
                 saveState();
             };
@@ -656,10 +769,8 @@ async function loadAyah() {
     fontDec.onclick = () => { fontSize = Math.max(12, fontSize - 2); setFontSize(); saveState(); };
 
     nextBtn.onclick = () => {
-      const max = surahs[currentSurah - 1].count;
-      if (currentAyah < max) currentAyah++;
-      else if (currentSurah < 114) { currentSurah++; currentAyah = 1; }
-      loadAyah(); saveState();
+        nextAyahOrSurah();
+        handleManualAyahChange();
     };
 
     prevBtn.onclick = () => {
@@ -668,7 +779,8 @@ async function loadAyah() {
         currentSurah--;
         currentAyah = surahs[currentSurah - 1].count;
       }
-      loadAyah(); saveState();
+      handleManualAyahChange();
+      saveState();
     };
 
     translationSelect.querySelectorAll('div').forEach((div, index) => {
@@ -680,23 +792,81 @@ async function loadAyah() {
       };
     });
 
+    // Audio Controls Logic
     audioBtn.addEventListener("click", () => {
-      if (!currentSurah || !currentAyah) return;
-      const surahStr = currentSurah.toString().padStart(3, '0');
-      const ayahStr = currentAyah.toString().padStart(3, '0');
-      const audioPath = `audio/${surahStr}/${ayahStr}.mp3`;
-      
-      audioPlayer.src = audioPath;
-      audioPlayer.play().catch(e => {
-        console.error("فشل تشغيل الصوت:", e);
-        alert("فشل تشغيل الصوت. تأكد من وجود الملف.");
-      });
+        if (!isPlaying) {
+            // Start playing based on the current mode
+            if (isContinuousPlay) {
+                currentAudioState = "continuous";
+            } else if (repeatNumber > 1) {
+                currentAudioState = "repeat";
+                currentRepeatCount = 1; // Start the counter
+            } else {
+                currentAudioState = "none";
+            }
+            playCurrentAyah();
+        } else {
+            // Pause
+            audioPlayer.pause();
+            isPlaying = false;
+            audioBtn.textContent = '🔊';
+        }
     });
+    
+    repeatBtn.addEventListener("click", () => {
+        isContinuousPlay = !isContinuousPlay;
+        
+        // Disable repeat number if continuous play is enabled
+        if (isContinuousPlay) {
+            repeatNumberInput.disabled = true;
+            repeatNumberInput.value = 1;
+        } else {
+            repeatNumberInput.disabled = false;
+            repeatNumberInput.value = repeatNumber;
+        }
+        
+        continuousPlayCheckbox.checked = isContinuousPlay;
+        updateRepeatIcon();
+        saveState();
+		
+     if (isPlaying) {
+        audioPlayer.pause();
+        currentRepeatCount = 0; // Reset counter
+        playCurrentAyah(); // Play with new settings
+    }
+});
+
+
 
     toggleTajweed.addEventListener("change", () => {
       isTajweedEnabled = toggleTajweed.checked;
       localStorage.setItem('tajweedEnabled', isTajweedEnabled);
       loadAyah();
+    });
+    
+    continuousPlayCheckbox.addEventListener("change", () => {
+        isContinuousPlay = continuousPlayCheckbox.checked;
+        repeatNumberInput.disabled = isContinuousPlay;
+        if(isContinuousPlay) {
+            repeatNumberInput.value = 1;
+        } else {
+            repeatNumberInput.value = repeatNumber;
+        }
+        updateRepeatIcon();
+        saveState();
+    });
+    
+    repeatNumberInput.addEventListener("change", () => {
+        repeatNumber = parseInt(repeatNumberInput.value, 10);
+        if (repeatNumber < 1) {
+            repeatNumber = 1;
+            repeatNumberInput.value = 1;
+        }
+        isContinuousPlay = false;
+        continuousPlayCheckbox.checked = false;
+        repeatNumberInput.disabled = false;
+        updateRepeatIcon();
+        saveState();
     });
 
     textColorInput.addEventListener('input', () => {
@@ -711,6 +881,10 @@ async function loadAyah() {
     
     // Initial load
     toggleTajweed.checked = isTajweedEnabled;
+    repeatNumberInput.value = repeatNumber;
+    continuousPlayCheckbox.checked = isContinuousPlay;
+    repeatNumberInput.disabled = isContinuousPlay;
+    updateRepeatIcon();
     loadSurahs();
 </script></body>
 </html>
