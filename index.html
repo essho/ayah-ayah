@@ -31,9 +31,9 @@
   }
   * { box-sizing: border-box; max-width: 100%; }
   .ayah-text {
-    font-size: 2rem;
+    font-size: 1rem;
     text-align: center;
-    margin: 0.0rem;
+    margin: 0.5rem;
     letter-spacing: 0.5px;
     line-height: 1.8;
 	background: rgba(0, 0, 0, 0.20);       /* شفافية خفيفة */
@@ -70,17 +70,16 @@ label, button, input, select,
   -webkit-backdrop-filter: blur(6px);
   border-radius: 12px;
   padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */
-    font-size: 0.5rem;
+    font-size: 1rem;
     text-align: center;
     color: #ccc;
     position: fixed;
-    bottom: 4rem;
+    bottom: 2rem;
     cursor: pointer;
 	 overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    max-width: 95%;
+    max-width: 100%;
     width: 100%;
-    z-index: 8;
     transition: color 0.5s ease;
   }
   .controls {
@@ -269,7 +268,7 @@ label, button, input, select,
 
 <div class="ayah-text" id="bismillahText"></div>
 <div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 80vh;">...</div>
-<div class="translation-text" id="translation" style="max-height: 4rem; overflow-y: auto;">...</div>
+<div class="translation-text" id="translation" style="max-height: 5rem; overflow-y: auto;">...</div>
 
 <div class="controls">
   <button class="arrow-btn" id="prevBtn">▶️</button>
