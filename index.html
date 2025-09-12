@@ -33,9 +33,9 @@
   .ayah-text {
     font-size: 2rem;
     text-align: center;
-    margin: 0.6rem;
+    margin: 0.0rem;
     letter-spacing: 0.5px;
-    line-height: 2.5;
+    line-height: 1.8;
 	background: rgba(0, 0, 0, 0.20);       /* شفافية خفيفة */
 	backdrop-filter: blur(6px);
 	-webkit-backdrop-filter: blur(6px);
@@ -44,17 +44,37 @@
     overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   }
+  :root{
+  --ui-font-family: 'Amiri', serif; /* هيتحدث من JS تلقائيًا */
+  --ui-text-color: #ffffff;         /* هيتحدث من JS تلقائيًا */
+  --translation-font-size: 1rem;    /* هيتحدث من JS تلقائيًا */
+}
+
+/* خلّي عناصر الواجهة تورّث الخط واللون من المتغيرات */
+.translation-text,
+.modal-content,
+.scrollable-select,
+.controls,
+.top-icons,
+label, button, input, select,
+#quickSurahList, #quickAyahList {
+  font-family: var(--ui-font-family);
+  color: var(--ui-text-color);
+}
+
+
+
   .translation-text {
     background: rgba(0, 0, 0, 0.18);       /* شفافية خفيفة */
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border-radius: 12px;
   padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */
-    font-size: 1rem;
+    font-size: 0.5rem;
     text-align: center;
     color: #ccc;
     position: fixed;
-    bottom: 3.5rem;
+    bottom: 4rem;
     cursor: pointer;
 	 overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -64,11 +84,7 @@
     transition: color 0.5s ease;
   }
   .controls {
-    background: rgba(0, 0, 0, 0.18);       /* شفافية خفيفة */
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border-radius: 12px;
-  padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */
+    background: transparent;
     position: fixed;
     bottom: 1rem;
     width: 100%;
@@ -80,7 +96,11 @@
     z-index: 9;
   }
   .arrow-btn {
-    background: transparent;
+	background: rgba(0, 0, 0, 0.18);       /* شفافية خفيفة */
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border-radius: 12px;
+	padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */
     border: none;
     font-size: 2rem;
     color: white;
@@ -102,11 +122,6 @@
   }
   .center-btn:hover { opacity: 1; transform: scale(1.05); }
   .top-icons {
-	background: rgba(0, 0, 0, 0.18);       /* شفافية خفيفة */
-	backdrop-filter: blur(6px);
-	-webkit-backdrop-filter: blur(6px);
-	border-radius: 12px;
-	padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */
     position: absolute;
     top: 0.4rem;
     width: 100%;
@@ -126,9 +141,20 @@
     direction: ltr;
   }
   .icon-btn {
-    background: none; border: none; font-size: 1.5rem; color: white;
+	background: rgba(0, 0, 0, 0.18);       /* شفافية خفيفة */
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border-radius: 12px;
+	padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */ 
+	border: none; 
+	font-size: 1.5rem; 
+	color: white;
     opacity: 0.5; cursor: pointer; transition: opacity 0.3s ease, transform 0.3s ease;
-    display: flex; align-items: center; gap: 0.2rem; position: relative;
+    display: flex; 
+	align-items: center; 
+	gap: 0.2rem; 
+	position: relative;
+	    z-index: 10;
   }
   .icon-btn:hover { opacity: 1; transform: scale(1.1); }
 
@@ -178,6 +204,8 @@
 	padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */
     overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+	  font-size: 1.25rem;   /* غيّرها لأي مقاس يناسبك */
+  line-height: 2.1;     /* اختياري لتحسين المسافات مع التشكيل */
   display: none; 
   justify-content: center; align-items: center; z-index: 20; }
   #expandedTranslationModal .modal-content { max-height: 80vh; overflow-y: auto; }
@@ -241,7 +269,7 @@
 
 <div class="ayah-text" id="bismillahText"></div>
 <div class="ayah-text" id="ayah" style="overflow-y: auto; max-height: 80vh;">...</div>
-<div class="translation-text" id="translation" style="max-height: 3rem; overflow-y: auto;">...</div>
+<div class="translation-text" id="translation" style="max-height: 4rem; overflow-y: auto;">...</div>
 
 <div class="controls">
   <button class="arrow-btn" id="prevBtn">▶️</button>
@@ -616,6 +644,13 @@ function updateColorState() {
   // لون نص متباين ذكي لا يتعارض مع ألوان التجويد
   const contrast = getContrastTextColor(bgColor);
 
+  const bgHex = bgColorInput.value.toLowerCase();
+  document.body.style.backgroundColor = bgHex;
+
+  // لون واجهة موحّد: مع التجويد = تباين ذكي، بدون تجويد = من اختيار المستخدم
+  const uiColor = isTajweedEnabled ? getContrastTextColor(bgHex) : textColorInput.value;
+  document.documentElement.style.setProperty('--ui-text-color', uiColor);
+
   if (isTajweedEnabled) {
     // لا تغيّر ألوان rule<>, لكن اجعل النص الأساسي والشرح واضحين
     textColorInput.disabled = true;
@@ -737,7 +772,7 @@ function updateColorState() {
   });
 
   textColorInput.addEventListener('input', updateColorState);
-  fontFamilySelect.addEventListener('change', ()=>{ document.body.style.fontFamily = fontFamilySelect.value; });
+  fontFamilySelect.addEventListener('change', ()=>{ document.body.style.fontFamily = fontFamilySelect.value;  document.documentElement.style.setProperty('--ui-font-family', fontFamilySelect.value);});
   bgColorInput.addEventListener('input', updateColorState);
 
   // تحميل مبدئي
