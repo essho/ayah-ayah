@@ -10,7 +10,7 @@
   body {
     margin: 0;
     background-color: #f5f0e6;
-    color: white;
+    color: black;
 	font-family: -apple-system, 'Amiri', 'Noto Naskh Arabic', 'Scheherazade New', 'Lateef', 'Reem Kufi', serif;
     display: flex;
     flex-direction: column;
@@ -37,10 +37,23 @@
     margin: 0.5rem;
     letter-spacing: normal;
     line-height: 1.8;
-
+	background: rgba(0, 0, 0, 0.20);       /* شفافية خفيفة */
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	border-radius: 12px;
+	padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */
     overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   }
+  .ayah-text, .ayah-text span {
+  font-feature-settings: "liga";
+  -webkit-font-feature-settings: "liga";
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: none;
+  white-space: normal;
+  direction: rtl;
+  unicode-bidi: isolate;
+}
   :root{
   --ui-font-family: 'Amiri', serif; /* هيتحدث من JS تلقائيًا */
   --ui-text-color: #ffffff;         /* هيتحدث من JS تلقائيًا */
@@ -320,7 +333,7 @@ label, button, input, select,
     <div class="setting-row" style="display:flex;justify-content:space-around;align-items:center;gap:1rem;">
       <div style="display:flex;align-items:center;gap:0.5rem;">
         <label for="textColor">لون الخط:</label>
-        <input id="textColor" type="color" value="#ffffff"/>
+        <input id="textColor" type="color" value="#000000"/>
       </div>
   <div style="display:flex; align-items:center; gap: 0.5rem;">
               <select id="fontFamily">
