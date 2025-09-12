@@ -45,15 +45,13 @@
     overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   }
-  .ayah-text, .ayah-text span {
+.ayah-text span {
+  display: inline-block;
   font-feature-settings: "liga";
   -webkit-font-feature-settings: "liga";
   text-rendering: optimizeLegibility;
-  -webkit-text-size-adjust: none;
-  white-space: normal;
-  direction: rtl;
-  unicode-bidi: isolate;
 }
+
   :root{
   --ui-font-family: 'Amiri', serif; /* هيتحدث من JS تلقائيًا */
   --ui-text-color: #ffffff;         /* هيتحدث من JS تلقائيًا */
