@@ -37,11 +37,7 @@
     margin: 0.5rem;
     letter-spacing: normal;
     line-height: 1.8;
-	background: rgba(0, 0, 0, 0.20);       /* شفافية خفيفة */
-	backdrop-filter: blur(6px);
-	-webkit-backdrop-filter: blur(6px);
-	border-radius: 12px;
-	padding: 0.35rem 0.75rem;               /* مسافة داخلية بسيطة */
+
     overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   }
@@ -657,12 +653,10 @@ function updateColorState() {
     textColorInput.disabled = true;
     ayahEl.style.color = contrast;        // يطبّق فقط على النص خارج عناصر التجويد الملوّنة
     translationEl.style.color = contrast; // الترجمة كلها
-	 ayahEl.style.fontFamily = "'Scheherazade New', 'Noto Naskh Arabic', serif";
-
+	
   } else {
     textColorInput.disabled = false;
     ayahEl.style.color = textColorInput.value;
-	  ayahEl.style.fontFamily = fontFamilySelect.value;
     translationEl.style.color = textColorInput.value;
   }
 
