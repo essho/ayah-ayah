@@ -657,9 +657,12 @@ function updateColorState() {
     textColorInput.disabled = true;
     ayahEl.style.color = contrast;        // يطبّق فقط على النص خارج عناصر التجويد الملوّنة
     translationEl.style.color = contrast; // الترجمة كلها
+	 ayahEl.style.fontFamily = "'Scheherazade New', 'Noto Naskh Arabic', serif";
+
   } else {
     textColorInput.disabled = false;
     ayahEl.style.color = textColorInput.value;
+	  ayahEl.style.fontFamily = fontFamilySelect.value;
     translationEl.style.color = textColorInput.value;
   }
 
