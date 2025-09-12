@@ -733,11 +733,11 @@ function updateColorState() {
   fontInc.onclick = ()=>{ fontSize+=2; setFontSize(); saveState(); };
   fontDec.onclick = ()=>{ fontSize=Math.max(12,fontSize-2); setFontSize(); saveState(); };
 
-  nextBtn.onclick = ()=>{ nextAyahOrSurah(); handleManualAyahChange(); };
+  nextBtn.onclick = ()=>{ nextAyahOrSurah(); handleManualAyahChange();  ayahEl.scrollTop = 0; translationEl.scrollTop = 0;};
   prevBtn.onclick = ()=>{
     if(currentAyah>1) currentAyah--;
     else if(currentSurah>1){ currentSurah--; currentAyah = surahs[currentSurah-1].count; }
-    handleManualAyahChange(); saveState();
+    handleManualAyahChange(); saveState(); ayahEl.scrollTop = 0; translationEl.scrollTop = 0;
   };
 
   translationSelect.addEventListener('change', ()=>{
