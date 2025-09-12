@@ -32,6 +32,7 @@
   * { box-sizing: border-box; max-width: 100%; }
   .ayah-text {
     font-size: 1rem;
+	 font-family: inherit;
     text-align: center;
     margin: 0.5rem;
     letter-spacing: 0.5px;
@@ -74,7 +75,7 @@ label, button, input, select,
     text-align: center;
     color: #ccc;
     position: fixed;
-    bottom: 2rem;
+    bottom: 0.5rem;
     cursor: pointer;
 	 overflow-y: auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
@@ -85,7 +86,7 @@ label, button, input, select,
   .controls {
     background: transparent;
     position: fixed;
-    bottom: 1rem;
+    bottom: 3rem;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -326,14 +327,15 @@ label, button, input, select,
         <input id="textColor" type="color" value="#ffffff"/>
       </div>
   <div style="display:flex; align-items:center; gap: 0.5rem;">
-                <label for="fontFamily">نوع الخط:</label>
-                <select id="fontFamily">
-                    <option value="'Scheherazade New" selected>1 (افتراضي)</option>
-                        <option value="'Noto Naskh Arabic', serif">2</option>
-                        <option value="'Amiri', serif', serif">3</option>
-                        <option value="'Lateef', cursive">4</option>
-                        <option value="'Reem Kufi', sans-serif">5</option>
-                </select>
+              <select id="fontFamily">
+  <option value="'Noto Naskh Arabic', serif" selected>1 (افتراضي)</option>
+  <option value="'Amiri', serif">2</option>
+  <option value="'Scheherazade New', serif">3</option>
+  <option value="'Reem Kufi', sans-serif">4</option>
+  <option value="'Lateef', cursive">5</option>
+  <option value="'Almarai', sans-serif">6</option>
+  <option value="'Tajawal', sans-serif">7</option>
+</select>
             </div>
     </div>
 
