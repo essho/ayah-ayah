@@ -77,6 +77,8 @@
   --ui-font-family: 'Amiri', serif; /* هيتحدث من JS تلقائيًا */
   --ui-text-color: #ffffff;         /* هيتحدث من JS تلقائيًا */
   --translation-font-size: 1rem;    /* هيتحدث من JS تلقائيًا */
+    --ui-bg-color: #333333; /* لون الخلفية الديناميكي */
+  --ui-border-color: #555555; /* لون الحدود الديناميكي */
 }
 
 /* خلّي عناصر الواجهة تورّث الخط واللون من المتغيرات */
@@ -201,7 +203,7 @@ label, button, input, select,
     z-index: 10;
   }
   .modal-content {
-    background: transparent;
+    background: var(--ui-bg-color));
 	backdrop-filter: blur(6px);
 	-webkit-backdrop-filter: blur(6px);
 	border-radius: 50px;
@@ -244,6 +246,21 @@ label, button, input, select,
   display: none; 
   justify-content: center; align-items: center; z-index: 20; }
   #expandedTranslationModal .modal-content { max-height: 80vh; overflow-y: auto; }
+  
+  /* قم بتعديل هذا السطر ليستخدم المتغيرات الجديدة */
+select, input[type="number"], input[type="text"], button {
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(6px);
+  //background-color: var(--ui-bg-color);
+  border: 1px solid var(--ui-border-color);
+  color: var(--ui-text-color);
+  padding: 0.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+}
 
 /* اخفي السكروول مع بقاء السحب شغّال — لكل الحاويات اللي بتتسحب */
 #ayah,
@@ -316,7 +333,7 @@ label, button, input, select,
   <div class="modal-content" onclick="event.stopPropagation()">
     <h2>البحث في القرآن</h2>
     <div style="text-align:center; margin-bottom:1rem;">
-      <input type="text" id="searchInput" placeholder="اكتب كلمة أو آية" style="width:90%; padding: 0.5rem; font-size:1rem; background: #333; color: white; border: none; border-radius: 5px;" />
+      <input type="text" id="searchInput" placeholder="اكتب كلمة أو آية" style="width:90%; padding: 0.5rem; font-size:1rem; background: #333; color: white; border: none; border-radius: 25px;" />
     </div>
     <div id="searchResults" class="scrollable-select" style="max-height: 40vh; overflow-y: auto;">
       <div style="text-align: center; padding: 1rem;">نتائج البحث ستظهر هنا.</div>
@@ -358,8 +375,9 @@ label, button, input, select,
         <input id="textColor" type="color" value="#000000"/>
       </div>
   <div style="display:flex; align-items:center; gap: 0.5rem;">
+				 <label for="fontFamily">نوع الخط:</label>
               <select id="fontFamily">
-  <option value="'Noto Naskh Arabic', serif" selected>1 (افتراضي)</option>
+  <option value="'Noto Naskh Arabic', serif" selected>1</option>
   <option value="'Amiri', serif">2</option>
   <option value="'Scheherazade New', serif">3</option>
   <option value="'Reem Kufi', sans-serif">4</option>
