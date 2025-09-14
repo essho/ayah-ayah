@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-<link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=Lateef&family=Noto+Kufi+Arabic&family=Noto+Naskh+Arabic&family=Reem+Kufi&family=Scheherazade+New&family=Tajawal&family=Almarai&display=swap" rel="stylesheet"/>
-<title>آيه آيه</title>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  
+  <link rel="manifest" href="manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then(registration => {
+          console.log('SW registered: ', registration);
+        }).catch(registrationError => {
+          console.log('SW registration failed: ', registrationError);
+        });
+      });
+    }
+  </script>
+  
+  <title>آيه آيه</title>
 <style>
   body {
     margin: 0;

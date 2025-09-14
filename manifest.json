@@ -1,0 +1,16 @@
+{
+  "name": "آيه آيه",
+  "short_name": "آيه آيه",
+  "description": "تطبيق لقراءة واستماع القرآن الكريم",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f0e6",
+  "theme_color": "#282c34",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
